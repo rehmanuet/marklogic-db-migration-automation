@@ -41,11 +41,7 @@ public class s3 {
         System.out.println(stringToList(str).size());
         for (int i = 0; i <= stringToList(str).size() - 1; i++) {
             System.out.println(stringToList(str).get(i).get("objectId"));
-
-
         }
-
-
     }
 
 
