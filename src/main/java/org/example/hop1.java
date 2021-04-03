@@ -10,8 +10,8 @@ public class hop1 extends App {
         DatabaseClient client;
         App app = new App();
         client = app.connectML();
-        app.connectS3();
-        app.count(client);
+        app.getCountFromML(client);
+        app.getCountFromS3Raw();
 
     }
 }
