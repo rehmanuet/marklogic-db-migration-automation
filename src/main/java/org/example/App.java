@@ -68,7 +68,7 @@ public class App {
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
         StructuredQueryDefinition querydef = qb.directory(1, "/anthem.com/accounts/");
-        SearchHandle results = queryMgr.search(querydef, new SearchHandle(), 1);
+        SearchHandle results = queryMgr.search(querydef, new SearchHandle(), 10);
         long pageLength = results.getPageLength();
         long totalResults = results.getTotalResults();
         System.out.println("totalResults: " + totalResults + " pageLength: " + pageLength);
@@ -76,7 +76,7 @@ public class App {
         System.out.println(timesToLoop);
         for (int i = 0; i < totalResults; i = (int) (i + pageLength)) {
 //            System.out.println("Printing Results from: " + (i) + " to: " + (i + pageLength));
-            results = queryMgr.search(querydef, new SearchHandle(), i);
+            results = queryMgr.search(querydef, new SearchHandle(), i+1); // initially it was i but now i+1 due duplication error
             MatchDocumentSummary[] summaries = results.getMatchResults();//10 results because page length is 10
             for (MatchDocumentSummary summary : summaries) {
                 System.out.println("Extracted from URI-> " + summary.getUri());
@@ -196,8 +196,8 @@ public class App {
 
     public S3Object connectS3() throws IOException {
         String bucket = "highroads-marklogics-export";
-//        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
-        String key = "highroads_ml_data/anthem.com/1617178897343/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+//        String key = "highroads_ml_data/anthem.com/1617178897343/799ac3e8-3938-4848-bb3d-4a7627f0d866";
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         S3Object o = s3Client.getObject(new GetObjectRequest(bucket, key));
         System.out.println("Connecting S3");
@@ -219,6 +219,9 @@ public class App {
         S3ObjectInputStream s3is = o.getObjectContent();
         String str = getAsString(s3is);
         System.out.println("Total count from S3: " + stringToList(str).size());
+        for (int i = 0; i <= stringToList(str).size() - 1; i++) {
+            System.out.println(stringToList(str).get(i).get("objectId"));
+        }
 
     }
 
