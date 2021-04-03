@@ -43,8 +43,6 @@ public class s3 {
             System.out.println(stringToList(str).get(i).get("objectId"));
         }
     }
-
-
     private static String getAsString(InputStream is) throws IOException {
         if (is == null)
             return "";
