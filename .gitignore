@@ -1,0 +1,9 @@
+.idea/
+.git/
+ExtentReports/
+ExtentReports/ExtentReportResults.html
+target/
+bin/
+.settings/
+.project
+.classpath
