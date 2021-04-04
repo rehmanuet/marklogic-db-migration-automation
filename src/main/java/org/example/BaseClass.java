@@ -56,7 +56,7 @@ public class BaseClass {
         long pageLength = results.getPageLength();
         long totalResults = results.getTotalResults();
 //        System.out.println("totalResults: " + totalResults + " pageLength: " + pageLength);
-        long timesToLoop = totalResults / pageLength;
+//        long timesToLoop = totalResults / pageLength;
 //        System.out.println(timesToLoop);
         for (int i = 0; i < totalResults; i = (int) (i + pageLength)) {
 //            System.out.println("Printing Results from: " + (i) + " to: " + (i + pageLength));
@@ -85,7 +85,7 @@ public class BaseClass {
         StructuredQueryBuilder structuredQueryBuilder = new StructuredQueryBuilder();
         StructuredQueryDefinition query = structuredQueryBuilder.directory(0, "/anthem.com/accounts/");
         SearchHandle resultsHandle = queryMgr.search(query, new SearchHandle());
-        MatchDocumentSummary matches[] = resultsHandle.getMatchResults();
+        MatchDocumentSummary[] matches = resultsHandle.getMatchResults();
         System.out.println(resultsHandle.getTotalResults());
         long pageLength = resultsHandle.getPageLength();
         System.out.println(pageLength);
@@ -100,12 +100,11 @@ public class BaseClass {
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
 //        StructuredQueryDefinition querydef = qb.directory(true, "/anthem.com/serviceAreas/");
         StructuredQueryDefinition querydef = qb.directory(true, "/anthem.com/accounts/");
-
 //        StructuredQueryDefinition querydef = qb.directory(0, "/anthem.com/serviceAreas/");
         SearchHandle resultsHandle = queryMgr.search(querydef, new SearchHandle());
         MatchDocumentSummary[] results = resultsHandle.getMatchResults();
         System.out.println("Total count from ML: " + resultsHandle.getTotalResults());
-        client.release();
+//        client.release();
     }
 
     public Map<Object, Object> readDoc(DatabaseClient client, String objectURI) {
