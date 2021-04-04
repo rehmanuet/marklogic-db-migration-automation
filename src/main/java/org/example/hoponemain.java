@@ -33,7 +33,7 @@ import java.util.ArrayList;
 
 
 
-public class App {
+public class hoponemain {
 
 
     public static void main(String[] args) throws IOException {
@@ -91,7 +91,7 @@ public class App {
         //To Remove the Duplication
         //uriList = uriList.stream().distinct().collect(Collectors.toList());
         uriList = new ArrayList<>(uriList);
-        client.release();
+//        client.release();
 
         return uriList;
     }
@@ -128,7 +128,8 @@ public class App {
         client.release();
     }
 
-    public void readDoc(DatabaseClient client) {
+    public void readDoc(DatabaseClient client,String t) {
+//    public void readDoc(DatabaseClient client) {
         String filename = "4b00f3f5-05ad-4183-9024-e03413e0340f";
         JSONDocumentManager docMgr = client.newJSONDocumentManager();
 
@@ -136,11 +137,12 @@ public class App {
 
         JacksonHandle handle = new JacksonHandle();
 
-        docMgr.read(docId, handle);
+//        docMgr.read(docId, handle);
+        docMgr.read(t, handle);
         JsonNode node = handle.get();
         System.out.println(node);
 
-        client.release();
+//        client.release();
     }
 
     public void createDoc(DatabaseClient client) {
@@ -219,9 +221,9 @@ public class App {
         S3ObjectInputStream s3is = o.getObjectContent();
         String str = getAsString(s3is);
         System.out.println("Total count from S3: " + stringToList(str).size());
-        for (int i = 0; i <= stringToList(str).size() - 1; i++) {
-            System.out.println(stringToList(str).get(i).get("objectId"));
-        }
+//        for (int i = 0; i <= stringToList(str).size() - 1; i++) {
+//            System.out.println(stringToList(str).get(i).get("objectId"));
+//        }
 
     }
 
