@@ -11,9 +11,16 @@ public class test extends hoponemain2 {
 
         JSONArray array = new JSONArray(s);
 //        System.out.println(array.getJSONObject(1).toString());
-        System.out.println(stringToMap(array.getJSONObject(0).toString()));
-        System.out.println(stringToMap(array.getJSONObject(0).toString()).getClass());
-        System.out.println(array.getJSONObject(0).get("objectId"));
+//        System.out.println(stringToMap(array.getJSONObject(0).toString()));
+//        System.out.println(stringToMap(array.getJSONObject(0).toString()).getClass());
+//        System.out.println(array.getJSONObject(0).get("objectId"));
+        for (int i = 0; i < array.length(); i++) {
+            System.out.println(array.getJSONObject(i).get("objectId"));
+            if (array.getJSONObject(i).get("objectId").toString().equals("64e80427-d439-4a43-b068-551f10fcceef")){
+                System.out.println("PASS");
+            }
 
+
+        }
     }
 }

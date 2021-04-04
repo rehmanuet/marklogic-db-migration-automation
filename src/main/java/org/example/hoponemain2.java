@@ -136,7 +136,7 @@ public class hoponemain2 {
         JacksonHandle handle = new JacksonHandle();
 
 //        docMgr.read(docId, handle);
-        docMgr.read(docId, handle);
+        docMgr.read(t, handle);
         JsonNode node = handle.get();
 //        System.out.println(node);
 //        System.out.println(stringToMap(node.toString()));
