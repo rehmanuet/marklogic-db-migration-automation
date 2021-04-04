@@ -35,19 +35,7 @@ import org.json.JSONArray;
 import java.util.ArrayList;
 
 
-public class hoponemain2 {
-
-
-    public static void main(String[] args) throws IOException {
-
-//        DatabaseClient client = connectML();
-//        App ob = new App();
-//        ob.readDoc(client);
-//        ob.count(client);
-//        ob.listUri(client);
-//        ob.pageListUri(client);
-//        System.out.println(ob.pageListUri(client));
-    }
+public class BaseClass {
 
     public DatabaseClient connectML() {
         System.out.println("Connecting ML");
@@ -94,19 +82,15 @@ public class hoponemain2 {
 
     public void listUri(DatabaseClient client) {
         QueryManager queryMgr = client.newQueryManager();
-
         StructuredQueryBuilder structuredQueryBuilder = new StructuredQueryBuilder();
         StructuredQueryDefinition query = structuredQueryBuilder.directory(0, "/anthem.com/accounts/");
         SearchHandle resultsHandle = queryMgr.search(query, new SearchHandle());
-
         MatchDocumentSummary matches[] = resultsHandle.getMatchResults();
         System.out.println(resultsHandle.getTotalResults());
         long pageLength = resultsHandle.getPageLength();
         System.out.println(pageLength);
         for (MatchDocumentSummary match : matches) {
             System.out.println("Extracted from uri: " + match.getUri());
-
-
         }
         client.release();
     }
@@ -124,18 +108,17 @@ public class hoponemain2 {
         client.release();
     }
 
-    public Map<Object, Object> readDoc(DatabaseClient client, String t) {
+    public Map<Object, Object> readDoc(DatabaseClient client, String objectURI) {
 //    public void readDoc(DatabaseClient client) {
 //        String filename = "4b00f3f5-05ad-4183-9024-e03413e0340f";
-        String filename = t;
         JSONDocumentManager docMgr = client.newJSONDocumentManager();
 
-        String docId = "/anthem.com/accounts/" + filename;
+//        String docId = "/anthem.com/accounts/" + objectURI;
 
         JacksonHandle handle = new JacksonHandle();
 
 //        docMgr.read(docId, handle);
-        docMgr.read(t, handle);
+        docMgr.read(objectURI, handle);
         JsonNode node = handle.get();
 //        System.out.println(node);
 //        System.out.println(stringToMap(node.toString()));
@@ -217,21 +200,8 @@ public class hoponemain2 {
     }
 
     public JSONArray getUriFromS3Raw(S3Object o) throws IOException {
-
         S3ObjectInputStream s3is = o.getObjectContent();
         String str = getAsString(s3is);
-
-//        for (int i = 0; i <= stringToList(str).size() - 1; i++) {
-//            System.out.println(stringToList(str).get(i).get("objectId"));
-//        }
-//        System.out.println(str);
-        JSONArray array = new JSONArray(str);
-
-//        System.out.println(array.getJSONObject(1).toString());
-//        System.out.println(stringToMap(array.getJSONObject(0).toString()));
-//        return stringToList(str);
-        return array;
-
+        return new JSONArray(str);
     }
-
 }

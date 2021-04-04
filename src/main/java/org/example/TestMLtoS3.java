@@ -8,38 +8,37 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-public class hop1 extends hoponemain {
+public class TestMLtoS3 extends BaseClass {
 
     public static void main(String[] args) throws IOException {
-        hop1 test = new hop1();
+        TestMLtoS3 test = new TestMLtoS3();
 //        test.tc_count();
         test.tc_comparison();
-
-
     }
 
     public void tc_count() throws IOException {
         DatabaseClient client;
-        hoponemain app = new hoponemain();
-        client = app.connectML();
-        app.getCountFromML(client);
-        app.getCountFromS3Raw();
+        BaseClass obj = new BaseClass();
+        client = obj.connectML();
+        obj.getCountFromML(client);
+        obj.getCountFromS3Raw();
+        client.release();
 
     }
 
     public void tc_comparison() throws IOException {
-        hoponemain app2 = new hoponemain();
+        BaseClass obj = new BaseClass();
         // S3
-        S3Object file = app2.connectS3();
-        JSONArray listURI = app2.getUriFromS3Raw(file);
+        S3Object file = obj.connectS3();
+        JSONArray listURI = obj.getUriFromS3Raw(file);
 
         DatabaseClient client;
-        client = app2.connectML();
-        List<String> URI = app2.pageListUri(client);
-//        System.out.println(URI);
+        client = obj.connectML();
+        List<String> URI = obj.pageListUri(client);
+        //System.out.println(URI);
         for (int i = 0; i <= URI.size() - 1; i++) {
             System.out.println(URI.get(i));
-            Map<Object, Object> ML = app2.readDoc(client, URI.get(i));
+            Map<Object, Object> ML = obj.readDoc(client, URI.get(i));
             System.out.println(ML.get("objectId"));
             for (int y = 0; y <= listURI.length(); y++) {
                 if (listURI.getJSONObject(y).get("objectId").toString().equals(ML.get("objectId"))) {
@@ -51,5 +50,6 @@ public class hop1 extends hoponemain {
 
             }
         }
+        client.release();
     }
 }
