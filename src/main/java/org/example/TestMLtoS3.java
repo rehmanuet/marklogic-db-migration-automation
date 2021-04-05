@@ -12,8 +12,8 @@ public class TestMLtoS3 extends BaseClass {
 
     public static void main(String[] args) throws IOException {
         TestMLtoS3 test = new TestMLtoS3();
-        test.tc_count();
-//        test.tc_comparison();
+//        test.tc_count();
+        test.tc_comparison();
     }
 
     public void tc_count() throws IOException {
@@ -45,6 +45,11 @@ public class TestMLtoS3 extends BaseClass {
                     System.out.println("ML: " + ML);
                     System.out.println("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
                     System.out.println("MATCHED");
+                    System.out.println("FInd Difference");
+
+                    break;
+                }else{
+                    System.out.println("NOT MATCHED");
                     break;
                 }
 

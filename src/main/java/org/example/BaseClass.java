@@ -66,7 +66,7 @@ public class BaseClass {
 //                System.out.println("Extracted from URI-> " + summary.getUri());
                 uriList.add(summary.getUri());
             }
-            if (i >= 1000) {//number of URI to store/retreive. plus 10
+            if (i >= 11000) {//number of URI to store/retreive. plus 10
 
                 System.out.println("BREAK");
                 break;
@@ -180,6 +180,9 @@ public class BaseClass {
     public S3Object connectS3() throws IOException {
         String bucket = "highroads-marklogics-export";
         String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+// different service
+//                String key = "highroads_ml_data/anthem.com/1616576984510/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+//count 365
 //        String key = "highroads_ml_data/anthem.com/1617178897343/799ac3e8-3938-4848-bb3d-4a7627f0d866";
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         S3Object o = s3Client.getObject(new GetObjectRequest(bucket, key));
