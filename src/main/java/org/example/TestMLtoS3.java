@@ -1,6 +1,8 @@
 package org.example;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import com.marklogic.client.DatabaseClient;
 import org.json.JSONArray;
 
@@ -46,13 +48,12 @@ public class TestMLtoS3 extends BaseClass {
                     System.out.println("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
                     System.out.println("MATCHED");
                     System.out.println("FInd Difference");
-
-                    break;
-                }else{
-                    System.out.println("NOT MATCHED");
+                    MapDifference<Object, Object> diff= Maps.difference(ML, stringToMap(listURI.getJSONObject(y).toString()));
+                    System.out.println(diff.entriesDiffering());
+                    System.out.println("Size: "+diff.entriesDiffering().size());
+                    System.out.println("isEmpty: "+diff.entriesDiffering().isEmpty());
                     break;
                 }
-
             }
         }
         client.release();
