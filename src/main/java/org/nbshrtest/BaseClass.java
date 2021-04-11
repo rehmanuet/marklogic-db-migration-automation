@@ -1,6 +1,6 @@
 package org.nbshrtest;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.lang.reflect.Type;
 
@@ -17,10 +17,6 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.StringUtils;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.marklogic.client.DatabaseClient;
@@ -45,6 +41,7 @@ public class BaseClass {
                 "bldintdb.highroads.local", 8002, "p2a-aws-bldint-00-content",
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
     }
+
     public List<String> pageListUri(DatabaseClient client) {
 
         List<String> uriList = new ArrayList<>();
@@ -201,5 +198,30 @@ public class BaseClass {
         S3ObjectInputStream s3is = o.getObjectContent();
         String str = getAsString(s3is);
         return new JSONArray(str);
+    }
+
+    public void createFile() {
+        try {
+            File myObj = new File("logs.txt");
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public FileWriter writeFile() {
+        try {
+            createFile();
+            return new FileWriter("logs.txt", false);
+        } catch (IOException e) {
+            System.out.println("An error occurred while creating the FileWriter object.");
+            e.printStackTrace();
+            return null;
+        }
     }
 }

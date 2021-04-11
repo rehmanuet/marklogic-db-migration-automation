@@ -6,6 +6,8 @@ import com.google.common.collect.Maps;
 import com.marklogic.client.DatabaseClient;
 import org.json.JSONArray;
 
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +32,8 @@ public class TestMLtoS3 extends BaseClass {
 
     public void tc_comparison() throws IOException {
         BaseClass obj = new BaseClass();
+        // Create a file for Error logging
+        FileWriter errorLog = obj.writeFile();
         // S3
         S3Object file = obj.connectS3();
         JSONArray listURI = obj.getUriFromS3Raw(file);
@@ -46,16 +50,22 @@ public class TestMLtoS3 extends BaseClass {
                     MapDifference<Object, Object> diff = Maps.difference(ML, stringToMap(listURI.getJSONObject(y).toString()));
                     System.out.println("ObjectID: " + ML.get("objectId"));
                     if (diff.entriesDiffering().size() != 0) {
-                        System.out.println("Found Difference");
-                        System.out.println("MisMatched Object: " + ML.get("objectId"));
-                        System.out.println("ML: " + ML);
-                        System.out.println("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
-                        System.out.println(diff.entriesDiffering());
+                        System.out.println("MisMatched ObjectID: " + ML.get("objectId"));
+                        errorLog.write("MisMatched ObjectID: " + ML.get("objectId"));
+                        errorLog.append(System.getProperty("line.separator"));
+                        errorLog.write("ML: " + ML);
+                        errorLog.append(System.getProperty("line.separator"));
+                        errorLog.write("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
+                        errorLog.append(System.getProperty("line.separator"));
+                        errorLog.write("Difference: "+String.valueOf(diff.entriesDiffering()));
+                        errorLog.append(System.getProperty("line.separator"));
+                        errorLog.append(System.getProperty("line.separator"));
                     }
                     break;
                 }
             }
         }
+        errorLog.close();
         client.release();
     }
 }
