@@ -1,12 +1,9 @@
 package org.nbshrtest;
 
 import java.io.*;
-import java.util.List;
+import java.util.*;
 import java.lang.reflect.Type;
 
-
-import java.util.Map;
-import java.util.TreeMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.reflect.TypeToken;
@@ -29,8 +26,6 @@ import com.marklogic.client.io.StringHandle;
 import com.marklogic.client.query.*;
 import org.json.JSONArray;
 
-import java.util.ArrayList;
-
 
 public class BaseClass {
 
@@ -38,8 +33,30 @@ public class BaseClass {
         System.out.println("Connecting ML");
 
         return DatabaseClientFactory.newClient(
-                "bldintdb.highroads.local", 8002, "p2a-aws-bldint-00-content",
+                getProperty("host"), Integer.parseInt(getProperty("port")), getProperty("database"),
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
+//        return DatabaseClientFactory.newClient(
+//                "bldintdb.highroads.local", 8002, "p2a-aws-bldint-00-content",
+//                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
+    }
+
+    public String getProperty(String pro) {
+
+        try (InputStream input = new FileInputStream("src/main/java/org/nbshrtest/resources/config.properties")) {
+
+            Properties prop = new Properties();
+
+            // load a properties file
+            prop.load(input);
+
+            // get the property value and print it out
+
+            return prop.getProperty(pro);
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     public List<String> pageListUri(DatabaseClient client) {
@@ -47,7 +64,7 @@ public class BaseClass {
         List<String> uriList = new ArrayList<>();
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
-        StructuredQueryDefinition querydef = qb.directory(1, "/anthem.com/accounts/");
+        StructuredQueryDefinition querydef = qb.directory(1, getProperty("uri"));
         SearchHandle results = queryMgr.search(querydef, new SearchHandle(), 10);
         long pageLength = results.getPageLength();
         long totalResults = results.getTotalResults();
@@ -77,7 +94,7 @@ public class BaseClass {
     public void listUri(DatabaseClient client) {
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder structuredQueryBuilder = new StructuredQueryBuilder();
-        StructuredQueryDefinition query = structuredQueryBuilder.directory(0, "/anthem.com/accounts/");
+        StructuredQueryDefinition query = structuredQueryBuilder.directory(0, getProperty("uri"));
         SearchHandle resultsHandle = queryMgr.search(query, new SearchHandle());
         MatchDocumentSummary[] matches = resultsHandle.getMatchResults();
         System.out.println(resultsHandle.getTotalResults());
@@ -92,7 +109,7 @@ public class BaseClass {
     public void getCountFromML(DatabaseClient client) {
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
-        StructuredQueryDefinition querydef = qb.directory(true, "/anthem.com/accounts/");
+        StructuredQueryDefinition querydef = qb.directory(true, getProperty("uri"));
 //        StructuredQueryDefinition querydef = qb.directory(0, "/anthem.com/serviceAreas/");
         SearchHandle resultsHandle = queryMgr.search(querydef, new SearchHandle());
         MatchDocumentSummary[] results = resultsHandle.getMatchResults();
@@ -171,12 +188,12 @@ public class BaseClass {
     }
 
     public S3Object connectS3() throws IOException {
-        String bucket = "highroads-marklogics-export";
+        String bucket = getProperty("s3rawbucket");
 //        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
 //        count 365
 //        String key = "highroads_ml_data/anthem.com/1617178897343/799ac3e8-3938-4848-bb3d-4a7627f0d866";
 //        One Wrong Json to check the difference
-        String key = "highroads_ml_data/anthem.com/1616750380741/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+        String key = getProperty("s3rawdata");
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         S3Object o = s3Client.getObject(new GetObjectRequest(bucket, key));
         System.out.println("Connecting S3");
