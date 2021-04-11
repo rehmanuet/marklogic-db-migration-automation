@@ -1,4 +1,4 @@
-package org.example;
+package org.nbshrtest;
 
 import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.collect.MapDifference;
@@ -33,25 +33,25 @@ public class TestMLtoS3 extends BaseClass {
         // S3
         S3Object file = obj.connectS3();
         JSONArray listURI = obj.getUriFromS3Raw(file);
-
+        // ML
         DatabaseClient client;
         client = obj.connectML();
         List<String> URI = obj.pageListUri(client);
         //System.out.println(URI);
         for (int i = 0; i <= URI.size() - 1; i++) {
-            System.out.println(URI.get(i));
+//            System.out.println(URI.get(i));
             Map<Object, Object> ML = obj.readDoc(client, URI.get(i));
-            System.out.println(ML.get("objectId"));
             for (int y = 0; y <= listURI.length(); y++) {
                 if (listURI.getJSONObject(y).get("objectId").toString().equals(ML.get("objectId"))) {
-                    System.out.println("ML: " + ML);
-                    System.out.println("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
-                    System.out.println("MATCHED");
-                    System.out.println("FInd Difference");
-                    MapDifference<Object, Object> diff= Maps.difference(ML, stringToMap(listURI.getJSONObject(y).toString()));
-                    System.out.println(diff.entriesDiffering());
-                    System.out.println("Size: "+diff.entriesDiffering().size());
-                    System.out.println("isEmpty: "+diff.entriesDiffering().isEmpty());
+                    MapDifference<Object, Object> diff = Maps.difference(ML, stringToMap(listURI.getJSONObject(y).toString()));
+                    System.out.println("ObjectID: " + ML.get("objectId"));
+                    if (diff.entriesDiffering().size() != 0) {
+                        System.out.println("Found Difference");
+                        System.out.println("MisMatched Object: " + ML.get("objectId"));
+                        System.out.println("ML: " + ML);
+                        System.out.println("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
+                        System.out.println(diff.entriesDiffering());
+                    }
                     break;
                 }
             }

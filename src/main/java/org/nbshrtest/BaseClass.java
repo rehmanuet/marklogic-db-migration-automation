@@ -1,8 +1,9 @@
-package org.example;
+package org.nbshrtest;
 
 import java.io.IOException;
 import java.util.List;
 import java.lang.reflect.Type;
+
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -43,9 +44,7 @@ public class BaseClass {
         return DatabaseClientFactory.newClient(
                 "bldintdb.highroads.local", 8002, "p2a-aws-bldint-00-content",
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
-
     }
-
     public List<String> pageListUri(DatabaseClient client) {
 
         List<String> uriList = new ArrayList<>();
@@ -66,8 +65,7 @@ public class BaseClass {
 //                System.out.println("Extracted from URI-> " + summary.getUri());
                 uriList.add(summary.getUri());
             }
-            if (i >= 11000) {//number of URI to store/retreive. plus 10
-
+            if (i >= 11000) { //number of URI to store/retrieve. plus 10
                 System.out.println("BREAK");
                 break;
             }
@@ -76,7 +74,6 @@ public class BaseClass {
         //uriList = uriList.stream().distinct().collect(Collectors.toList());
         uriList = new ArrayList<>(uriList);
 //        client.release();
-
         return uriList;
     }
 
@@ -98,7 +95,6 @@ public class BaseClass {
     public void getCountFromML(DatabaseClient client) {
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
-//        StructuredQueryDefinition querydef = qb.directory(true, "/anthem.com/serviceAreas/");
         StructuredQueryDefinition querydef = qb.directory(true, "/anthem.com/accounts/");
 //        StructuredQueryDefinition querydef = qb.directory(0, "/anthem.com/serviceAreas/");
         SearchHandle resultsHandle = queryMgr.search(querydef, new SearchHandle());
@@ -179,11 +175,11 @@ public class BaseClass {
 
     public S3Object connectS3() throws IOException {
         String bucket = "highroads-marklogics-export";
-        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+//        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
 //        count 365
 //        String key = "highroads_ml_data/anthem.com/1617178897343/799ac3e8-3938-4848-bb3d-4a7627f0d866";
 //        One Wrong Json to check the difference
-//        String key = "highroads_ml_data/anthem.com/1616750380741/799ac3e8-3938-4848-bb3d-4a7627f0d866";
+        String key = "highroads_ml_data/anthem.com/1616750380741/799ac3e8-3938-4848-bb3d-4a7627f0d866";
         AmazonS3 s3Client = AmazonS3ClientBuilder.defaultClient();
         S3Object o = s3Client.getObject(new GetObjectRequest(bucket, key));
         System.out.println("Connecting S3");
