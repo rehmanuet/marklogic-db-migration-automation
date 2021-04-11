@@ -16,8 +16,8 @@ public class TestMLtoS3 extends BaseClass {
 
     public static void main(String[] args) throws IOException {
         TestMLtoS3 test = new TestMLtoS3();
-//        test.tc_count();
-        test.tc_comparison();
+        test.tc_count();
+//        test.tc_comparison();
     }
 
     public void tc_count() throws IOException {
