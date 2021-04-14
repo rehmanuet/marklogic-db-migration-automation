@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,29 +36,34 @@ public class TestMLtoS3 extends BaseClass {
         // Create a file for Error logging
         FileWriter errorLog = obj.writeFile();
         // S3
-        S3Object file = obj.connectS3();
-        JSONArray listURI = obj.getUriFromS3Raw(file);
+//        S3Object file = obj.connectS3();
+        JSONArray listURI = obj.getUriFromS3Raw();
+
         // ML
         DatabaseClient client;
         client = obj.connectML();
-        List<String> URI = obj.pageListUri(client);
-        //System.out.println(URI);
-        for (int i = 0; i <= URI.size() - 1; i++) {
-//            System.out.println(URI.get(i));
-            Map<Object, Object> ML = obj.readDoc(client, URI.get(i));
+        List<String> MLURI = obj.pageListUri(client);
+        List<String> S3URI = obj.MLObjectIDlist();
+        System.out.println(S3URI.size());
+        System.out.println(MLURI.size());
+        List<String> testcomp = obj.commonURI(MLURI, S3URI);
+        List<String> not=obj.differentURI(MLURI, S3URI);
+        for (int i = 0; i < testcomp.size() - 1; i++) {
+            System.out.println(testcomp.get(i));
+            Map<Object, Object> ML = obj.readDoc(client, testcomp.get(i));
             for (int y = 0; y <= listURI.length(); y++) {
-                if (listURI.getJSONObject(y).get("objectId").toString().equals(ML.get("objectId"))) {
-                    MapDifference<Object, Object> diff = Maps.difference(ML, stringToMap(listURI.getJSONObject(y).toString()));
-                    System.out.println("ObjectID: " + ML.get("objectId"));
+                if (listURI.getJSONObject(y).get("objectId").toString().equals(testcomp.get(i))) {
+                    Map<Object, Object> S3 = stringToMap(listURI.getJSONObject(y).toString());
+                    MapDifference<Object, Object> diff = Maps.difference(ML, S3);
                     if (diff.entriesDiffering().size() != 0) {
                         System.out.println("MisMatched ObjectID: " + ML.get("objectId"));
                         errorLog.write("MisMatched ObjectID: " + ML.get("objectId"));
                         errorLog.append(System.getProperty("line.separator"));
                         errorLog.write("ML: " + ML);
                         errorLog.append(System.getProperty("line.separator"));
-                        errorLog.write("S3: " + stringToMap(listURI.getJSONObject(y).toString()));
+                        errorLog.write("S3: " + S3);
                         errorLog.append(System.getProperty("line.separator"));
-                        errorLog.write("Difference: "+String.valueOf(diff.entriesDiffering()));
+                        errorLog.write("Difference: " + String.valueOf(diff.entriesDiffering()));
                         errorLog.append(System.getProperty("line.separator"));
                         errorLog.append(System.getProperty("line.separator"));
                     }
@@ -65,6 +71,7 @@ public class TestMLtoS3 extends BaseClass {
                 }
             }
         }
+        errorLog.write("Following ObjectID not found in S3:"+String.valueOf(not));
         errorLog.close();
         client.release();
     }

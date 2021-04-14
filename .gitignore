@@ -8,3 +8,4 @@ bin/
 .project
 .classpath
 /logs.txt
+src/main/java/org/nbshrtest/test.java

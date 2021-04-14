@@ -76,8 +76,8 @@ public class BaseClass {
             results = queryMgr.search(querydef, new SearchHandle(), i + 1); // initially it was i but now i+1 due duplication error
             MatchDocumentSummary[] summaries = results.getMatchResults();//10 results because page length is 10
             for (MatchDocumentSummary summary : summaries) {
-//                System.out.println("Extracted from URI-> " + summary.getUri());
-                uriList.add(summary.getUri());
+                System.out.println("Extracted from URI-> " + summary.getUri());
+                uriList.add(summary.getUri().split("/")[3]);
             }
             if (i >= 11000) { //number of URI to store/retrieve. plus 10
                 System.out.println("BREAK");
@@ -122,12 +122,12 @@ public class BaseClass {
 //        String filename = "4b00f3f5-05ad-4183-9024-e03413e0340f";
         JSONDocumentManager docMgr = client.newJSONDocumentManager();
 
-//        String docId = "/anthem.com/accounts/" + objectURI;
+        String docId = "/anthem.com/accounts/" + objectURI;
 
         JacksonHandle handle = new JacksonHandle();
 
-//        docMgr.read(docId, handle);
-        docMgr.read(objectURI, handle);
+        docMgr.read(docId, handle);
+//        docMgr.read(objectURI, handle);
         JsonNode node = handle.get();
 //        System.out.println(node);
 //        System.out.println(stringToMap(node.toString()));
@@ -211,8 +211,9 @@ public class BaseClass {
 
     }
 
-    public JSONArray getUriFromS3Raw(S3Object o) throws IOException {
-        S3ObjectInputStream s3is = o.getObjectContent();
+    public JSONArray getUriFromS3Raw() throws IOException {
+        S3Object file = connectS3();
+        S3ObjectInputStream s3is = file.getObjectContent();
         String str = getAsString(s3is);
         return new JSONArray(str);
     }
@@ -240,5 +241,27 @@ public class BaseClass {
             e.printStackTrace();
             return null;
         }
+    }
+    public List<String> MLObjectIDlist() throws IOException {
+//        S3Object file = connectS3();
+        List<String> uriS3List = new ArrayList<>();
+        JSONArray listURI=getUriFromS3Raw();
+        for (int i = 0; i <= listURI.length()-1; i++) {
+            uriS3List.add(listURI.getJSONObject(i).get("objectId").toString());
+        }
+        return uriS3List;
+    }
+    public List<String> commonURI(List<String> listOne, List<String> listTwo){
+
+        List<String> common = new ArrayList<>(listOne);
+        common.retainAll(listTwo);
+        System.out.println(common);
+        return common;
+    }
+    public List<String> differentURI(List<String> listOne, List<String> listTwo){
+        List<String> differences = new ArrayList<>(listOne);
+        differences.removeAll(listTwo);
+        System.out.println("diff"+differences);
+     return differences;
     }
 }
