@@ -47,7 +47,7 @@ public class TestMLtoS3 extends BaseClass {
         System.out.println(S3URI.size());
         System.out.println(MLURI.size());
         List<String> testcomp = obj.commonURI(MLURI, S3URI);
-        List<String> not=obj.differentURI(MLURI, S3URI);
+        List<String> missing_objects=obj.differentURI(MLURI, S3URI);
         for (int i = 0; i < testcomp.size() - 1; i++) {
             System.out.println(testcomp.get(i));
             Map<Object, Object> ML = obj.readDoc(client, testcomp.get(i));
@@ -71,7 +71,9 @@ public class TestMLtoS3 extends BaseClass {
                 }
             }
         }
-        errorLog.write("Following ObjectID not found in S3:"+String.valueOf(not));
+        if (missing_objects != null) {
+            errorLog.write("Following ObjectID not found in S3: "+String.valueOf(missing_objects));
+        }
         errorLog.close();
         client.release();
     }
