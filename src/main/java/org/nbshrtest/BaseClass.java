@@ -31,13 +31,9 @@ public class BaseClass {
 
     public DatabaseClient connectML() {
         System.out.println("Connecting ML");
-
         return DatabaseClientFactory.newClient(
                 getProperty("host"), Integer.parseInt(getProperty("port")), getProperty("database"),
                 new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
-//        return DatabaseClientFactory.newClient(
-//                "bldintdb.highroads.local", 8002, "p2a-aws-bldint-00-content",
-//                new DatabaseClientFactory.DigestAuthContext("admin", "admin"));
     }
 
     public String getProperty(String pro) {
@@ -110,29 +106,20 @@ public class BaseClass {
         QueryManager queryMgr = client.newQueryManager();
         StructuredQueryBuilder qb = new StructuredQueryBuilder();
         StructuredQueryDefinition querydef = qb.directory(true, getProperty("uri"));
-//        StructuredQueryDefinition querydef = qb.directory(0, "/anthem.com/serviceAreas/");
         SearchHandle resultsHandle = queryMgr.search(querydef, new SearchHandle());
         MatchDocumentSummary[] results = resultsHandle.getMatchResults();
         System.out.println("Total count from ML: " + resultsHandle.getTotalResults());
-//        client.release();
     }
 
     public Map<Object, Object> readDoc(DatabaseClient client, String objectURI) {
 //    public void readDoc(DatabaseClient client) {
 //        String filename = "4b00f3f5-05ad-4183-9024-e03413e0340f";
         JSONDocumentManager docMgr = client.newJSONDocumentManager();
-
         String docId = "/anthem.com/accounts/" + objectURI;
-
         JacksonHandle handle = new JacksonHandle();
-
         docMgr.read(docId, handle);
 //        docMgr.read(objectURI, handle);
         JsonNode node = handle.get();
-//        System.out.println(node);
-//        System.out.println(stringToMap(node.toString()));
-
-//        client.release();
         return stringToMap(node.toString());
     }
 
@@ -187,7 +174,7 @@ public class BaseClass {
         return gson.fromJson(payload, resultType);
     }
 
-    public S3Object connectS3() throws IOException {
+    public S3Object connectS3() {
         String bucket = getProperty("s3rawbucket");
 //        String key = "highroads_ml_data/anthem.com/1617366391468/799ac3e8-3938-4848-bb3d-4a7627f0d866";
 //        count 365
@@ -242,26 +229,29 @@ public class BaseClass {
             return null;
         }
     }
+
     public List<String> MLObjectIDlist() throws IOException {
 //        S3Object file = connectS3();
         List<String> uriS3List = new ArrayList<>();
-        JSONArray listURI=getUriFromS3Raw();
-        for (int i = 0; i <= listURI.length()-1; i++) {
+        JSONArray listURI = getUriFromS3Raw();
+        for (int i = 0; i <= listURI.length() - 1; i++) {
             uriS3List.add(listURI.getJSONObject(i).get("objectId").toString());
         }
         return uriS3List;
     }
-    public List<String> commonURI(List<String> listOne, List<String> listTwo){
+
+    public List<String> commonURI(List<String> listOne, List<String> listTwo) {
 
         List<String> common = new ArrayList<>(listOne);
         common.retainAll(listTwo);
         System.out.println(common);
         return common;
     }
-    public List<String> differentURI(List<String> listOne, List<String> listTwo){
+
+    public List<String> differentURI(List<String> listOne, List<String> listTwo) {
         List<String> differences = new ArrayList<>(listOne);
         differences.removeAll(listTwo);
-        System.out.println("diff"+differences);
-     return differences;
+        System.out.println("diff" + differences);
+        return differences;
     }
 }

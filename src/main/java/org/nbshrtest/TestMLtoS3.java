@@ -1,15 +1,12 @@
 package org.nbshrtest;
 
-import com.amazonaws.services.s3.model.S3Object;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
 import com.marklogic.client.DatabaseClient;
 import org.json.JSONArray;
 
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,9 +33,7 @@ public class TestMLtoS3 extends BaseClass {
         // Create a file for Error logging
         FileWriter errorLog = obj.writeFile();
         // S3
-//        S3Object file = obj.connectS3();
         JSONArray listURI = obj.getUriFromS3Raw();
-
         // ML
         DatabaseClient client;
         client = obj.connectML();
@@ -63,7 +58,7 @@ public class TestMLtoS3 extends BaseClass {
                         errorLog.append(System.getProperty("line.separator"));
                         errorLog.write("S3: " + S3);
                         errorLog.append(System.getProperty("line.separator"));
-                        errorLog.write("Difference: " + String.valueOf(diff.entriesDiffering()));
+                        errorLog.write("Difference: " + diff.entriesDiffering());
                         errorLog.append(System.getProperty("line.separator"));
                         errorLog.append(System.getProperty("line.separator"));
                     }
@@ -72,7 +67,7 @@ public class TestMLtoS3 extends BaseClass {
             }
         }
         if (missing_objects != null) {
-            errorLog.write("Following ObjectID not found in S3: "+String.valueOf(missing_objects));
+            errorLog.write("Following ObjectID not found in S3: "+ missing_objects);
         }
         errorLog.close();
         client.release();
