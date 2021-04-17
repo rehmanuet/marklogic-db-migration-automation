@@ -17,7 +17,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         checkTimestampt("base_plan", "plan_due_datetime", "public");
 
     }
-
     public static void checkPrimaryKeyNamingConvention(String tbl_name, String schema) throws SQLException {
         ResultSet result = runQuery("SELECT table_name,column_name ,constraint_name FROM information_schema.key_column_usage where table_name = '" + tbl_name + "' and table_schema = '" + schema + "';");
         String col_name = result.getString("column_name");
