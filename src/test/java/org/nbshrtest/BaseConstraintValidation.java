@@ -34,6 +34,7 @@ public class BaseConstraintValidation {
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery(query);
         rs.next();
+
 //        System.out.println(rs.getString("constraint_name"));
 //        while (rs.next()) {
 ////            System.out.println(rs.getString(6)+rs.getString(15));
