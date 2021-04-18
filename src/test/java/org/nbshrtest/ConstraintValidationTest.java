@@ -33,7 +33,7 @@ public class ConstraintValidationTest extends BaseConstraintValidation {
     //TODO TestNG is integrated just add parameterization logic
     public void checkPrimaryKeyNamingConvention() throws SQLException {
         String tbl_name = "base_plan";
-        String schema = "public";
+        String schema = "qatest";
         ResultSet result = runQuery("SELECT table_name,column_name ,constraint_name FROM information_schema.key_column_usage where table_name = '" + tbl_name + "' and table_schema = '" + schema + "';");
         String col_name = result.getString("column_name");
         String actual_const_name = result.getString("constraint_name");
