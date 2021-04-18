@@ -38,6 +38,7 @@ public class ConstraintValidationTest extends BaseConstraintValidation {
         String col_name = result.getString("column_name");
         String actual_const_name = result.getString("constraint_name");
         String expected_const_name = tbl_name + "_pk_" + col_name;
+        System.out.println(actual_const_name);
         Assert.assertEquals(actual_const_name, expected_const_name);
 
     }
