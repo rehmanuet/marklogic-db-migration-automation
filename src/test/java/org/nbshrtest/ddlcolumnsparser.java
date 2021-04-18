@@ -22,18 +22,20 @@ public class ddlcolumnsparser extends BaseConstraintValidation {
 
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery(query);
-//        rs.next();
 
-//        System.out.println(rs.getString("constraint_name"));
         while (rs.next()) {
-//            System.out.println(rs.getString(6)+rs.getString(15));
-
-            System.out.println("--DATA TYPE-- "+rs.getString(1)+" --");
-
-//            ArrayList<String> rs.getString(1)= null;
-            String nq = "SELECT column_name FROM information_schema.columns WHERE table_name = 'base_plan' and table_schema ='qatest' and data_type ='" + rs.getString(1) + "';";
-            runQuery(nq);
             System.out.println("_______________________________");
+            System.out.println("--DATA TYPE-- " + rs.getString(1) + " --");
+
+            String nq = "SELECT column_name FROM information_schema.columns WHERE table_name = 'base_plan' and table_schema ='qatest' and data_type ='" + rs.getString(1) + "';";
+
+            Statement st1 = con.createStatement();
+            ResultSet rs1 = st1.executeQuery(nq);
+            while (rs1.next()) {
+                System.out.println("Column: " + rs1.getString(1));
+
+            }
+            System.out.println("_______________________________\n");
         }
         return rs;
     }
