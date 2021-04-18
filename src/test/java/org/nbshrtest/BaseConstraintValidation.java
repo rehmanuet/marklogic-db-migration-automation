@@ -6,7 +6,6 @@ public class BaseConstraintValidation {
     static Connection con = null;
 
 
-
     public static Connection getConnection() {
         if (con != null) return con;
         // get db, user, pass from settings file
@@ -29,8 +28,7 @@ public class BaseConstraintValidation {
 
     public static ResultSet runQuery(String query) throws SQLException {
 
-        con = getConnection();
-        assert con != null;
+
         Statement st = con.createStatement();
         ResultSet rs = st.executeQuery(query);
         rs.next();

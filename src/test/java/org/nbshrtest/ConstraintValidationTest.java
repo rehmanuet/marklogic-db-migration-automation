@@ -1,11 +1,17 @@
 package org.nbshrtest;
 
+import org.testng.Assert;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Test;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ConstraintValidation extends BaseConstraintValidation {
+public class ConstraintValidationTest extends BaseConstraintValidation {
 
-    public static void main(String[] args) throws SQLException {
+
+//    public static void main(String[] args) throws SQLException {
 //        checkPrimaryKeyNamingConvention("base_plan", "public");
 //        checkIfPrimaryKeyExist("base_plan", "public");
 //        checkNotNULL("base_plan", "effective_datetime", "public");
@@ -14,17 +20,25 @@ public class ConstraintValidation extends BaseConstraintValidation {
 //        checkBool("base_plan", "min_value_coverage", "public");
 //        checkDuplicationOnPKAndUniqueKey("base_plan", "public");
 //        checkDate("base_plan", "plan_due_date", "public");
-        checkTimestampt("base_plan", "plan_due_datetime", "public");
+//        checkTimestampt("base_plan", "plan_due_datetime", "public");
 
+    //    }
+    @BeforeSuite
+    public void startUp() {
+        con = getConnection();
     }
-    public static void checkPrimaryKeyNamingConvention(String tbl_name, String schema) throws SQLException {
+
+    @Test
+//    public void checkPrimaryKeyNamingConvention(String tbl_name, String schema) throws SQLException {
+    //TODO TestNG is integrated just add parameterization logic
+    public void checkPrimaryKeyNamingConvention() throws SQLException {
+        String tbl_name = "base_plan";
+        String schema = "public";
         ResultSet result = runQuery("SELECT table_name,column_name ,constraint_name FROM information_schema.key_column_usage where table_name = '" + tbl_name + "' and table_schema = '" + schema + "';");
         String col_name = result.getString("column_name");
-        String const_name = result.getString("constraint_name");
-        System.out.println(tbl_name + "_pk_" + col_name);
-        System.out.println(const_name);
-        // TODO Add assertion for above two statements
-//        con.close();
+        String actual_const_name = result.getString("constraint_name");
+        String expected_const_name = tbl_name + "_pk_" + col_name;
+        Assert.assertEquals(actual_const_name, expected_const_name);
 
     }
 
@@ -33,7 +47,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion
-//        con.close();
     }
 
     public static void checkNotNULL(String tbl_name, String col_name, String schema) throws SQLException {
@@ -41,7 +54,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-//        con.close();
     }
 
     public static void checkENUM(String tbl_name, String col_name, String schema) throws SQLException {
@@ -49,7 +61,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
     }
 
     public static void checkEmptyQuotes(String tbl_name, String col_name, String schema) throws SQLException {
@@ -57,7 +68,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
     }
 
     public static void checkBool(String tbl_name, String col_name, String schema) throws SQLException {
@@ -65,7 +75,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
     }
 
     public static void checkDuplicationOnPKAndUniqueKey(String tbl_name, String schema) throws SQLException {
@@ -76,7 +85,6 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
     }
 
     public static void checkDate(String tbl_name, String col_name, String schema) throws SQLException {
@@ -84,15 +92,19 @@ public class ConstraintValidation extends BaseConstraintValidation {
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
 
     }
+
     public static void checkTimestampt(String tbl_name, String col_name, String schema) throws SQLException {
         ResultSet result = runQuery("SELECT COUNT(*) FROM " + schema + "." + tbl_name + " WHERE cast(" + col_name + " as text) !~ '(\\d{4}-\\d{2}-\\d{2}) +(\\d{2}:\\d{2}:\\d{2}\\+\\d{2})';");
         Integer tl_count = Integer.valueOf(result.getString("count"));
         System.out.println(tl_count);
         // TODO Add assertion and logic to logged those id whose constraint is violated
-        con.close();
 
+    }
+
+    @AfterSuite
+    public void tearDown() throws SQLException {
+        con.close();
     }
 }
