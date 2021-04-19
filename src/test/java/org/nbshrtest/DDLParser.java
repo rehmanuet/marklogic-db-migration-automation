@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 
 public class DDLParser extends BaseConstraintValidation {
 
@@ -111,5 +112,14 @@ public class DDLParser extends BaseConstraintValidation {
         System.out.println(a);
         String jsonStr = JSONArray.toJSONString(a);
         System.out.println(jsonStr);
+        for (int i = 0; i < a.size(); i++) {
+            System.out.println("DataType:"+a.get(i).get(0));
+            for (int j = 1; j < a.get(i).size(); j++) {
+                System.out.println(a.get(i).get(j));
+
+            }
+            System.out.println("_________________-");
+
+        }
     }
 }
